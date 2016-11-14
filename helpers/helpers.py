@@ -12,6 +12,7 @@ import os
 import time
 import ConfigParser
 from distutils import spawn
+from datetime import datetime
 
 # -------------------------------------
 
@@ -358,10 +359,12 @@ def echostep(step, start=1):
         print(step.upper() + ' START')
         sys.stderr.write('------------------------------------------------------------------\n')
         sys.stderr.write(step.upper() + ' START\n')
+        sys.stderr.write(str(datetime.now()) + '\n')
     else:
         print(step.upper() + ' END')
         print('------------------------------------------------------------------')
         sys.stderr.write(step.upper() + ' END\n')
+        sys.stderr.write(str(datetime.now()) + '\n')
         sys.stderr.write('------------------------------------------------------------------\n')
 
     sys.stdout.flush()
@@ -370,4 +373,12 @@ def echostep(step, start=1):
 
 if __name__ == "__main__":
 
-    pass
+    # to execute as a stand-alone script, give the name of the function 
+    # as the first arg, followed by the args to the function
+    if sys.argv[1] in globals():
+        try:
+            globals()[sys.argv[1]](*sys.argv[2:])
+	except:
+            print('Error! Are you sure you\'re using the correct arguments?')
+    else:
+        print('Function not found')

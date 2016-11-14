@@ -5,7 +5,19 @@
     ~~~~~~
 """
 
+import sys
+import numpy as np
+import pandas as pd
+from scipy.stats import entropy
+
 # -------------------------------------
+
+def norm_entropy(count_list):
+    count_vector = np.array(count_list)
+    prob_vector = count_vector / float(count_vector.sum())
+    prob_uniform = np.array([1.0/len(prob_vector)] * len(prob_vector))
+    H_norm = entropy(prob_vector) / entropy(prob_uniform)
+    return H_norm 
 
 def computedistrib(infile, outfile):
     """compute simple distribution of contigs"""
@@ -95,13 +107,21 @@ def formatpileup(infile, idxfile, outfile):
                 # get position (this will become previous position for next iteration)
                 pos = line.split()[1]
 
-    # check if last contig covered until the end
-    if int(idx[myid]) > int(pos):
-        for i in range(int(pos) + 1, int(idx[myid]) + 1):
-            f.write(myid + '\t' + str(i) + '\t0\n')
+        # check if last contig covered until the end
+        if int(idx[myid]) > int(pos):
+            for i in range(int(pos) + 1, int(idx[myid]) + 1):
+                f.write(myid + '\t' + str(i) + '\t0\n')
 
 # -------------------------------------
 
 if __name__ == "__main__":
 
-    pass
+    # to execute as a stand-alone script, give the name of the function 
+    # as the first arg, followed by the args to the function
+    if sys.argv[1] in globals():
+        try:
+            globals()[sys.argv[1]](*sys.argv[2:])
+	except:
+            print('Error! Are you sure you\'re using the correct arguments?')
+    else:
+        print('Function not found')
