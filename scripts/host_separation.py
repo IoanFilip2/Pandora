@@ -76,10 +76,14 @@ def hostsep(args):
 
     print('STAR mapping commenced')
 
+    # STAR option  --outFilterMultimapNmax 1 to only output alignments if a read uniquely maps to reference;
+    # HERE: allow up to 10 multi-hits reported --> will not affect feature counts downstream, nor Pandora results (b/c human multi-mapping here)
+    # This option should not modify the downstream counts (of genes) with featureCounts, which only counts features that are uniquely mapped (per BAM input marking info) 
+
     if (args.single and ('y' in args.single or 'Y' in args.single)):
-        cmd = 'STAR --runThreadN {args.numthreads} --genomeDir {args.refstar} --readFilesIn {args.mate1} --outFileNamePrefix {args.outputdir}/ --outSAMtype BAM Unsorted --outSAMunmapped Within {starflag}'.format(args=args, starflag=starflag)
+        cmd = 'STAR --runThreadN {args.numthreads} --genomeDir {args.refstar} --readFilesIn {args.mate1} --outFileNamePrefix {args.outputdir}/ --outSAMtype BAM Unsorted --outFilterMultimapNmax 10 --outSAMunmapped Within {starflag}'.format(args=args, starflag=starflag)
     else:
-        cmd = 'STAR --runThreadN {args.numthreads} --genomeDir {args.refstar} --readFilesIn {args.mate1} {args.mate2} --outFileNamePrefix {args.outputdir}/ --outSAMtype BAM Unsorted --outSAMunmapped Within {starflag}'.format(args=args, starflag=starflag)
+        cmd = 'STAR --runThreadN {args.numthreads} --genomeDir {args.refstar} --readFilesIn {args.mate1} {args.mate2} --outFileNamePrefix {args.outputdir}/ --outSAMtype BAM Unsorted --outFilterMultimapNmax 10 --outSAMunmapped Within {starflag}'.format(args=args, starflag=starflag)
 
     hp.run_cmd(cmd, args.verbose, 0)
     print('STAR mapping finished')

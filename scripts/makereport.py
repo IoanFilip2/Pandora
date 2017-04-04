@@ -118,7 +118,10 @@ def makerep(args):
                     if not 'PREDICTED' in line:
                         # get desired fields
                         fields = [line.split('\t')[i].strip() for i in myindicies]
-                        taxid = fields[taxidindex]
+
+                        ## taxid could be in the form "tax_1;tax_2" and we extract the first number only below, processed as a string
+                        ## TO DO: check for downstream errors in string to int - typing processing
+                        taxid = fields[taxidindex].split(';')[0]
                         qseqid = fields[qseqidindex]
                         # get read counts
                         readcounts = '-'
